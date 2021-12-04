@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { Environment } from './common';
+import { PaymentIdModule } from './payment-id/payment-id.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { Environment } from './common';
       }),
     }),
     AuthModule,
+    PaymentIdModule,
   ],
   controllers: [AppController],
   providers: [],
