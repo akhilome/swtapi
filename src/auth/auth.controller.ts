@@ -1,7 +1,16 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { SuccessResponseObject } from 'src/common';
 import { AuthService } from './auth.service';
 import { RegisterRequestDto } from './dto/register.request.dto';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller({
   version: '1',
@@ -15,5 +24,14 @@ export class AuthController {
     const user = await this.authService.createUser(data);
 
     return new SuccessResponseObject('Registration successful', user);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(LocalAuthGuard)
+  @Post('/login')
+  async login(@Req() req) {
+    const data = await this.authService.getLoginAccessToken(req.user);
+
+    return new SuccessResponseObject('Login successful', data);
   }
 }
