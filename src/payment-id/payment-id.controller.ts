@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Post, Req } from '@nestjs/common';
 import { Auth } from 'src/auth/auth.decorator';
 import { SuccessResponseObject } from 'src/common';
 import { PaymentIdService } from './payment-id.service';
@@ -17,6 +17,16 @@ export class PaymentIdController {
     return new SuccessResponseObject(
       'Payment Ids retrieved successfully',
       pids,
+    );
+  }
+
+  @Post()
+  async create(@Req() req) {
+    const createdPid = await this.paymentIdService.create(req.user?.id);
+
+    return new SuccessResponseObject(
+      'Payment Ids generated successfully',
+      createdPid,
     );
   }
 }

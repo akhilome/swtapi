@@ -20,6 +20,8 @@ export class PaymentIdService {
   }
 
   async create(userId: string, isDefault = false) {
+    if (!userId) throw new Error('user id is required to create payment id');
+
     const existingPids = await this.paymentIdModel.find({
       user_id: userId,
     });
