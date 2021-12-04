@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { Auth } from 'src/auth/auth.decorator';
 import { SuccessResponseObject } from 'src/common';
 import { PaymentIdService } from './payment-id.service';
@@ -12,8 +21,8 @@ export class PaymentIdController {
   constructor(private readonly paymentIdService: PaymentIdService) {}
 
   @Get()
-  async fetch(@Req() req) {
-    const pids = await this.paymentIdService.fetchAll(req.user.id);
+  async fetch(@Req() { user }) {
+    const pids = await this.paymentIdService.fetchAll(user?.id);
     return new SuccessResponseObject(
       'Payment Ids retrieved successfully',
       pids,
@@ -21,12 +30,18 @@ export class PaymentIdController {
   }
 
   @Post()
-  async create(@Req() req) {
-    const createdPid = await this.paymentIdService.create(req.user?.id);
+  async create(@Req() { user }) {
+    const createdPid = await this.paymentIdService.create(user?.id);
 
     return new SuccessResponseObject(
       'Payment Ids generated successfully',
       createdPid,
     );
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
+  async delete(@Req() { user }, @Param('id') id) {
+    await this.paymentIdService.delete(user?.id, id);
   }
 }

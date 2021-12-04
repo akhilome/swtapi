@@ -10,7 +10,7 @@ export type PaymentIdDocument = PaymentId & Document;
   },
 })
 export class PaymentId {
-  @Prop({ index: true })
+  @Prop({ index: true, unique: true })
   id: string;
 
   @Prop({ default: null, type: S.Types.ObjectId })
