@@ -11,7 +11,7 @@ export type PaymentIdDocument = PaymentId & Document;
 })
 export class PaymentId {
   @Prop({ index: true })
-  ref: string;
+  id: string;
 
   @Prop({ default: null, type: S.Types.ObjectId })
   user_id: string; // id of payment id owner

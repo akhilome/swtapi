@@ -30,10 +30,18 @@ export class PaymentIdService {
 
     const paymentId = await this.paymentIdModel.create({
       user_id: userId,
-      ref: this.generateId(),
+      id: this.generateId(),
       is_default: isDefault,
     });
 
-    return { ref: paymentId.ref, default: paymentId.is_default };
+    return { id: paymentId.id, default: paymentId.is_default };
+  }
+
+  async fetchAll(userId: string) {
+    const paymentIds = await this.paymentIdModel.find({
+      user_id: userId,
+    });
+
+    return paymentIds.map((pid) => ({ id: pid.id, default: pid.is_default }));
   }
 }

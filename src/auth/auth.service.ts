@@ -58,7 +58,7 @@ export class AuthService {
   async getUserById(id: string) {
     const user = await this.userModel.findById(id);
 
-    return { id: user.id, email: user.email };
+    return user ? { id: user.id, email: user.email } : null;
   }
 
   async getLoginAccessToken(user) {
