@@ -5,12 +5,19 @@ import * as helmet from 'helmet';
 
 import { AppModule } from './app.module';
 import { Environment } from './common';
+import { HttpExceptionFilter } from './common/http-exception.filter';
+import { ValidationExceptionFilter } from './common/validation-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableVersioning();
 
   app.use(helmet());
+
+  app.useGlobalFilters(
+    new HttpExceptionFilter(),
+    new ValidationExceptionFilter(),
+  );
 
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
