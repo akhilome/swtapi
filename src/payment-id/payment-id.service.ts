@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { customAlphabet } from 'nanoid';
+import { UserService } from 'src/user/user.service';
 import { DefaultPaymentIdDeleteError } from './errors/default-pid-delete.error';
 import { MaxPaymentIdsError } from './errors/max-pids.error';
 import { PaymentIdNotFoundError } from './errors/pid-notfound.error';
@@ -12,6 +13,7 @@ export class PaymentIdService {
   constructor(
     @InjectModel(PaymentId.name)
     private readonly paymentIdModel: Model<PaymentId>,
+    private readonly userService: UserService,
   ) {}
 
   private generateId() {
@@ -60,5 +62,19 @@ export class PaymentIdService {
     if (paymentIdDoc.is_default) throw new DefaultPaymentIdDeleteError();
 
     await paymentIdDoc.remove();
+  }
+
+  async lookupUser(pid: string) {
+    const paymentIdDoc = await this.paymentIdModel.findOne({
+      id: pid,
+    });
+
+    if (!paymentIdDoc) throw new PaymentIdNotFoundError();
+
+    const user = await this.userService.getUserById(paymentIdDoc.user_id);
+
+    if (!user) throw new Error('User not found');
+
+    return user;
   }
 }
