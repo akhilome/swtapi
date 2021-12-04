@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { Environment } from 'src/common';
+import { PaymentIdModule } from 'src/payment-id/payment-id.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { User, UserSchema } from './schemas/user.schema';
@@ -20,6 +21,7 @@ import { LocalStrategy } from './strategies/local.strategy';
         signOptions: { expiresIn: config.get(Environment.JWT_EXPIRY) },
       }),
     }),
+    PaymentIdModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],

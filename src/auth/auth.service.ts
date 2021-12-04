@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { comparePassword, hashPassword } from 'src/common';
+import { PaymentIdService } from 'src/payment-id/payment-id.service';
 import { RegisterRequestDto } from './dto/register.request.dto';
 import { EmailAlreadyExistsError } from './errors/exisiting-email.error';
 import { User } from './schemas/user.schema';
@@ -12,6 +13,7 @@ export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly jwtService: JwtService,
+    private readonly paymentIdService: PaymentIdService,
   ) {}
 
   async createUser(data: RegisterRequestDto) {
@@ -28,6 +30,12 @@ export class AuthService {
       email: data.email,
       hash: hashPassword(data.password),
     });
+
+    // Implementation Note: ideally, a "user.created" event is supposed to be emitted,
+    // and a consumer should pick up and create a default payment id, for simplicity
+    // however, let's have it this way.
+
+    await this.paymentIdService.create(user.id, true);
 
     return {
       id: user.id,

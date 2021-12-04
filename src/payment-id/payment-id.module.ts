@@ -12,5 +12,6 @@ import { PaymentId, PaymentIdSchema } from './schemas/payment-id.schema';
   ],
   controllers: [PaymentIdController],
   providers: [PaymentIdService],
+  exports: [PaymentIdService],
 })
 export class PaymentIdModule {}
