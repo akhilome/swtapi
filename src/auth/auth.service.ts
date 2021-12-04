@@ -1,64 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { comparePassword, hashPassword } from 'src/common';
 import { PaymentIdService } from 'src/payment-id/payment-id.service';
 import { RegisterRequestDto } from './dto/register.request.dto';
-import { EmailAlreadyExistsError } from './errors/exisiting-email.error';
-import { User } from './schemas/user.schema';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly jwtService: JwtService,
+    private readonly userService: UserService,
     private readonly paymentIdService: PaymentIdService,
   ) {}
 
-  async createUser(data: RegisterRequestDto) {
-    const userExists = await this.userModel.findOne({
-      email: data.email,
-    });
-
-    if (userExists) throw new EmailAlreadyExistsError();
-
-    const user = await this.userModel.create({
-      first_name: data.first_name,
-      last_name: data.last_name,
-      phone_number: data.phone_number,
-      email: data.email,
-      hash: hashPassword(data.password),
-    });
+  async register(data: RegisterRequestDto) {
+    const user = await this.userService.createUser(data);
 
     // Implementation Note: ideally, a "user.created" event is supposed to be emitted,
     // and a consumer should pick up and create a default payment id, for simplicity
     // however, let's have it this way.
-
     await this.paymentIdService.create(user.id, true);
 
-    return {
-      id: user.id,
-      name: `${user.first_name} ${user.last_name}`,
-      phone_number: user.phone_number,
-      email: user.email,
-    };
-  }
-
-  async validateUser(email, password) {
-    const user = await this.userModel.findOne({ email });
-
-    if (!user || !comparePassword(password, user.hash)) {
-      return null;
-    }
-
-    return { id: user.id, email: user.email };
-  }
-
-  async getUserById(id: string) {
-    const user = await this.userModel.findById(id);
-
-    return user ? { id: user.id, email: user.email } : null;
+    return user;
   }
 
   async getLoginAccessToken(user) {

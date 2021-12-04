@@ -44,4 +44,11 @@ export class PaymentIdController {
   async delete(@Req() { user }, @Param('id') id) {
     await this.paymentIdService.delete(user?.id, id);
   }
+
+  @Get(':id/look-up')
+  async lookup(@Param('id') id) {
+    const user = await this.paymentIdService.lookupUser(id);
+
+    return new SuccessResponseObject('User retrieved successfully', user);
+  }
 }
