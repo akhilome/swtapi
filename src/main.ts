@@ -5,6 +5,7 @@ import * as helmet from 'helmet';
 
 import { AppModule } from './app.module';
 import { Environment } from './common';
+import { GlobalExceptionFilter } from './common/global-exception.filter';
 import { HttpExceptionFilter } from './common/http-exception.filter';
 import { ValidationExceptionFilter } from './common/validation-exception.filter';
 
@@ -17,6 +18,7 @@ async function bootstrap() {
   app.useGlobalFilters(
     new HttpExceptionFilter(),
     new ValidationExceptionFilter(),
+    new GlobalExceptionFilter(),
   );
 
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));

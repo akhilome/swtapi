@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
 import { Environment } from 'src/common';
+import { ExternalModule } from 'src/external/external.module';
 import { PaymentIdModule } from 'src/payment-id/payment-id.module';
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
@@ -22,6 +23,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     }),
     PaymentIdModule,
     UserModule,
+    ExternalModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, UserService],

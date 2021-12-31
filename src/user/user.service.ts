@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RegisterRequestDto } from 'src/auth/dto/register.request.dto';
 import { comparePassword, hashPassword } from 'src/common';
+import { BoschService } from 'src/external/bosch.service';
 import { EmailAlreadyExistsError } from './errors/exisiting-email.error';
 import { User } from './schemas/user.schema';
 
@@ -10,6 +11,7 @@ import { User } from './schemas/user.schema';
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    private bosch: BoschService,
   ) {}
 
   async createUser(data: RegisterRequestDto) {

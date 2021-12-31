@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { Environment } from './common';
 import { PaymentIdModule } from './payment-id/payment-id.module';
 import { UserModule } from './user/user.module';
+import { ExternalModule } from './external/external.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     PaymentIdModule,
+    ExternalModule,
   ],
   controllers: [AppController],
   providers: [],

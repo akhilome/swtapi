@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SuccessResponseObject } from 'src/common';
+import { CustomError } from 'src/common/custom.error';
 import { AuthService } from './auth.service';
 import { RegisterRequestDto } from './dto/register.request.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -21,6 +22,9 @@ export class AuthController {
 
   @Post('/register')
   async register(@Body() data: RegisterRequestDto) {
+    // throw new Error('Something happened');
+    throw new CustomError('Something happened');
+
     const user = await this.authService.register(data);
 
     return new SuccessResponseObject('Registration successful', user);
